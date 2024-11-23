@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = ['8000-taybe2-communitybookera-zb1gbrlxis8.ws.codeinstitute-ide.net',
-                'community-booker-55d0b3dbd2d3.herokuapp.com']
+                '.herokuapp.com']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.codeinstitute-ide.net/",
