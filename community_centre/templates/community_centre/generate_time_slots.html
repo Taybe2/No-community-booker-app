@@ -1,0 +1,19 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <h1>Generate Time Slots for {{ centre.name }}</h1>
+  <p>Select the start and end dates to generate time slots for this community center.</p>
+  
+  <form method="post">
+    {% csrf_token %}
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" required>
+    
+    <label for="end_date">End Date:</label>
+    <input type="date" id="end_date" name="end_date" required>
+
+    <button type="submit" class="button button-primary">Generate Time Slots</button>
+  </form>
+  
+  <a href="{% url 'admin:community_centre_communitycentre_changelist' %}">Back to Admin</a>
+{% endblock %}
