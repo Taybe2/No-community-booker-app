@@ -10,12 +10,12 @@ def time_slot_view(request):
     # Get the week offset from the URL parameters (default is 0)
     week_offset = int(request.GET.get('week_offset', 0))  # 0 for the current week, +1 for next week, -1 for previous week
 
-    if week_offset == 0:
-        # Current week starts from today
-        week_start = today
-    else:
-        # Other weeks always start from Monday
-        week_start = today - timedelta(days=today.weekday()) + timedelta(weeks=week_offset)
+    # if week_offset == 0:
+    #     # Current week starts from today
+    #     week_start = today
+    # else:
+    #     # Other weeks always start from Monday
+    week_start = today - timedelta(days=today.weekday()) + timedelta(weeks=week_offset)
     print(week_start)
     # Calculate the end of the week (Sunday)
     week_end = week_start + timedelta(days=6)  # End of the week (Sunday)
