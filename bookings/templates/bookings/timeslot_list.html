@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Time Slots{% endblock %}
+
+{% block content %}
+<h2>Select a Time Slot</h2>
+
+<form method="post">
+    {% csrf_token %}
+    
+    <div>
+        {% for slot in time_slots %}
+            <label>
+                <input type="radio" name="time_slot" value="{{ slot.id }}">
+                {{ slot.start_time }} - {{ slot.end_time }} on {{ slot.date }}
+            </label><br>
+        {% endfor %}
+    </div>
+
+    <button type="submit">Confirm Selection</button>
+</form>
+
+{% if error_message %}
+    <p style="color:red">{{ error_message }}</p>
+{% endif %}
+
+<!-- Pagination -->
+{% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+{% endblock %}

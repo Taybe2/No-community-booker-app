@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Community Booker{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Add your CSS file -->
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            
+        </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <main class="container">
+        {% block content %}
+        <!-- Page-specific content will go here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Community Booker. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/scripts.js' %}"></script> <!-- Add your JavaScript file -->
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
