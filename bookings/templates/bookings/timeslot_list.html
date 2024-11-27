@@ -25,7 +25,11 @@
                     <li>
                         <strong>{{ slot_info.slot.start_time }} - {{ slot_info.slot.end_time }}</strong>
                         {% if slot_info.has_booking %}
-                            <span style="color: red;">(Booked)</span>
+                        {% if slot_info.slot.booking.occasion_type == 'public' %}
+                            <span style="color: blue;">(Public: {{ slot_info.slot.booking.occasion }})</span>
+                        {% else %}
+                            <span style="color: grey;">(Private Event)</span>
+                        {% endif %}
                         {% else %}
                             <span style="color: green;">(Available)</span>
                         {% endif %}

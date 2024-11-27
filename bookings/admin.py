@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Booking, TimeSlot
+from .models import Booking, TimeSlot, Occasion
 
 # Register your models here.
+
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
     list_display = ('user', 'community_centre', 'time_slot', 'created_at')

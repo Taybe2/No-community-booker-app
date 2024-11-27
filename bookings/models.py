@@ -3,6 +3,23 @@ from django.contrib.auth.models import User
 from community_centre.models import CommunityCentre
 
 # Create your models here.
+
+class Occasion(models.Model):
+    OCCASION_TYPE_CHOICES = [
+        ('private', 'Private'),
+        ('public', 'Public'),
+    ]
+
+    name = models.CharField(max_length=50)  # Occasion name (e.g., "Birthday Party")
+    occasion_type = models.CharField(
+        max_length=10,
+        choices=OCCASION_TYPE_CHOICES,
+        default='private'
+    )  # Private or Public
+
+    def __str__(self):
+        return f"{self.name} ({self.get_occasion_type_display()})"
+
 class TimeSlot(models.Model):
     community_centre = models.ForeignKey(
         'community_centre.CommunityCentre', on_delete=models.CASCADE, related_name='time_slots'
@@ -21,11 +38,21 @@ class TimeSlot(models.Model):
 
 
 class Booking(models.Model):
+    OCCASION_TYPE_CHOICES = [
+        ('private', 'Private'),
+        ('public', 'Public'),
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
     time_slot = models.OneToOneField('TimeSlot', on_delete=models.CASCADE, related_name='booking')
     community_centre = models.ForeignKey(
         'community_centre.CommunityCentre', on_delete=models.CASCADE, related_name='bookings'
     )
+    occasion = models.CharField(max_length=100)  # Free text for the occasion
+    occasion_type = models.CharField(
+        max_length=10,
+        choices=OCCASION_TYPE_CHOICES,
+        default='private'
+    )  # Choice field for type (Private/Public)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
