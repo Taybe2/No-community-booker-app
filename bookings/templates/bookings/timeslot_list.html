@@ -13,26 +13,28 @@
 
 <!-- Display Each Day and Its Slots -->
 {% for day, slots in slots_by_day.items %}
-    <h3 {% if day < today %}style="color: grey;"{% endif %}>
-        {{ day|date:"l, F d, Y" }}
-        {% if day == today %}<strong>(Today)</strong>{% endif %}
-    </h3>
+    <div {% if day <= today %}style="color: grey;"{% endif %}>
+        <h3>
+            {{ day|date:"l, F d, Y" }}
+            {% if day == today %}<strong>(Today)</strong>{% endif %}
+        </h3>
     
-    {% if slots %}
-        <ul>
-            {% for slot in slots %}
-                <li>
-                    <strong>{{ slot.start_time }} - {{ slot.end_time }}</strong>
-                    {% if slot.is_available %}
-                        <span style="color: green;">(Available)</span>
-                    {% else %}
-                        <span style="color: red;">(Booked)</span>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No time slots available for this day.</p>
-    {% endif %}
+        {% if slots %}
+            <ul>
+                {% for slot_info in slots %}
+                    <li>
+                        <strong>{{ slot_info.slot.start_time }} - {{ slot_info.slot.end_time }}</strong>
+                        {% if slot_info.has_booking %}
+                            <span style="color: red;">(Booked)</span>
+                        {% else %}
+                            <span style="color: green;">(Available)</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No time slots available for this day.</p>
+        {% endif %}
+    </div>
 {% endfor %}
 {% endblock %}

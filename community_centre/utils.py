@@ -11,7 +11,7 @@ def generate_time_slots(community_centre, start_date, end_date, slot_duration_mi
     :param slot_duration_minutes: The duration of each time slot in minutes (default is 60 minutes)
     """
     # Get the operating days and opening/closing times for the community center
-    operating_days = range(community_centre.operating_start_day, community_centre.operating_end_day + 1)
+    operating_days = range(community_centre.operating_start_day - 1, community_centre.operating_end_day)
     opening_time = community_centre.opening_time
     closing_time = community_centre.closing_time
 

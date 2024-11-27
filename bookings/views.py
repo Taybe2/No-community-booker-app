@@ -4,7 +4,7 @@ from datetime import timedelta
 from .models import TimeSlot
 
 def time_slot_view(request):
-    """Display time slots for the current week (starting today) or other weeks (starting Monday)."""
+    """Display time slots for the current week or other weeks, with all days accounted for."""
     today = timezone.now().date()  # Get today's date
 
     # Get the week offset from the URL parameters (default is 0)
@@ -16,7 +16,7 @@ def time_slot_view(request):
     # else:
     #     # Other weeks always start from Monday
     week_start = today - timedelta(days=today.weekday()) + timedelta(weeks=week_offset)
-    print(week_start)
+
     # Calculate the end of the week (Sunday)
     week_end = week_start + timedelta(days=6)  # End of the week (Sunday)
 
@@ -25,12 +25,31 @@ def time_slot_view(request):
 
     # Group time slots by day
     slots_by_day = {}
-    for day in (week_start + timedelta(days=i) for i in range((week_end - week_start).days + 1)):  # Iterate through week_start to week_end
-        slots_by_day[day] = time_slots.filter(date=day)  # Fetch time slots for each day, even if empty
+    current_day = week_start
+    while current_day <= week_end:
+        slots_for_day = time_slots.filter(date=current_day)
+        slots_with_bookings = []
+        time_slot = TimeSlot.objects.first()
+
+        # Check each time slot for bookings
+        for slot in slots_for_day:
+            try:
+                # Try to access the related 'booking'
+                slot.booking  # If no booking exists, this will raise RelatedObjectDoesNotExist
+                has_booking = True
+            except:
+                has_booking = False
+            slots_with_bookings.append({
+                'slot': slot,
+                'has_booking': has_booking
+            })
+
+        slots_by_day[current_day] = slots_with_bookings
+        current_day += timedelta(days=1)
 
     # Prepare the context
     context = {
-        'slots_by_day': slots_by_day,  # A dictionary of dates and their slots
+        'slots_by_day': slots_by_day,  # A dictionary of dates and their slots with booking info
         'week_start': week_start,  # Start of the current/selected week
         'week_end': week_end,  # End of the current/selected week
         'week_offset': week_offset,  # Offset for next/previous week navigation
