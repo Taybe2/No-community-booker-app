@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Evergreen Community Centre{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h1>{{ community_name }}</h1>
+    <p class="lead">{{ community_description }}</p>
+
+    <!-- Button to Available Time Slots -->
+    <a href="/time-slots/" class="btn btn-primary mt-4">See Available Times</a>
+</div>
+{% endblock %}

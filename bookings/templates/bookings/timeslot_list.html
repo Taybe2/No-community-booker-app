@@ -3,42 +3,44 @@
 {% block title %}Available Time Slots{% endblock %}
 
 {% block content %}
-<h2>Available Time Slots from {{ week_start|date:"l, F d, Y" }} to {{ week_end|date:"l, F d, Y" }}</h2>
+<div class="container text-center mt-5">
+    <h2>Available Time Slots from {{ week_start|date:"l, F d, Y" }} to {{ week_end|date:"l, F d, Y" }}</h2>
 
-<!-- Navigation Buttons -->
-<div class="navigation">
-    <a href="?week_offset={{ week_offset|add:'-1' }}" class="btn btn-primary">Previous Week</a>
-    <a href="?week_offset={{ week_offset|add:'1' }}" class="btn btn-primary">Next Week</a>
-</div>
-
-<!-- Display Each Day and Its Slots -->
-{% for day, slots in slots_by_day.items %}
-    <div {% if day <= today %}style="color: grey;"{% endif %}>
-        <h3>
-            {{ day|date:"l, F d, Y" }}
-            {% if day == today %}<strong>(Today)</strong>{% endif %}
-        </h3>
-    
-        {% if slots %}
-            <ul>
-                {% for slot_info in slots %}
-                    <li>
-                        <strong>{{ slot_info.slot.start_time }} - {{ slot_info.slot.end_time }}</strong>
-                        {% if slot_info.has_booking %}
-                        {% if slot_info.slot.booking.occasion_type == 'public' %}
-                            <span style="color: blue;">(Public: {{ slot_info.slot.booking.occasion }})</span>
-                        {% else %}
-                            <span style="color: grey;">(Private Event)</span>
-                        {% endif %}
-                        {% else %}
-                            <span style="color: green;">(Available)</span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No time slots available for this day.</p>
-        {% endif %}
+    <!-- Navigation Buttons -->
+    <div class="navigation">
+        <a href="?week_offset={{ week_offset|add:'-1' }}" class="btn btn-primary">Previous Week</a>
+        <a href="?week_offset={{ week_offset|add:'1' }}" class="btn btn-primary">Next Week</a>
     </div>
-{% endfor %}
-{% endblock %}
+
+    <!-- Display Each Day and Its Slots -->
+    {% for day, slots in slots_by_day.items %}
+        <div {% if day <= today %}style="color: grey;"{% endif %}>
+            <h3>
+                {{ day|date:"l, F d, Y" }}
+                {% if day == today %}<strong>(Today)</strong>{% endif %}
+            </h3>
+        
+            {% if slots %}
+                <ul>
+                    {% for slot_info in slots %}
+                        <li>
+                            <strong>{{ slot_info.slot.start_time }} - {{ slot_info.slot.end_time }}</strong>
+                            {% if slot_info.has_booking %}
+                            {% if slot_info.slot.booking.occasion_type == 'public' %}
+                                <span style="color: blue;">(Public: {{ slot_info.slot.booking.occasion }})</span>
+                            {% else %}
+                                <span style="color: grey;">(Private Event)</span>
+                            {% endif %}
+                            {% else %}
+                                <span style="color: green;">(Available)</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No time slots available for this day.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+    {% endblock %}
+</div>

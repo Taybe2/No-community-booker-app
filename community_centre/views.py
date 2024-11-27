@@ -24,3 +24,14 @@ def generate_time_slots_view(request, centre_id):
         return redirect('admin:community_centre_communitycentre_changelist')  # Redirect to admin list
     
     return render(request, 'community_centre/generate_time_slots.html', {'centre': centre})
+
+def home_view(request):
+    """Homepage view displaying community center information."""
+    context = {
+        'community_name': 'Evergreen Community Centre',
+        'community_description': (
+            'Welcome to Evergreen Community Centre! We provide a space for community events, '
+            'meetings, and activities. Explore our services and book a time slot for your next event!'
+        ),
+    }
+    return render(request, 'community_centre/home.html', context)
