@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% url 'time_slots' as time_slots_url %}
+
 {% block title %}Welcome to Evergreen Community Centre{% endblock %}
 
 {% block content %}
@@ -8,6 +10,6 @@
     <p class="lead">{{ community_description }}</p>
 
     <!-- Button to Available Time Slots -->
-    <a href="/time-slots/" class="btn btn-primary mt-4">See Available Times</a>
+    <a href="{% url 'time_slots' %}" class="btn btn-primary mt-4">See Available Times</a>
 </div>
 {% endblock %}
