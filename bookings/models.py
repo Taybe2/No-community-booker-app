@@ -4,22 +4,6 @@ from community_centre.models import CommunityCentre
 
 # Create your models here.
 
-class Occasion(models.Model):
-    OCCASION_TYPE_CHOICES = [
-        ('private', 'Private'),
-        ('public', 'Public'),
-    ]
-
-    name = models.CharField(max_length=50)  # Occasion name (e.g., "Birthday Party")
-    occasion_type = models.CharField(
-        max_length=10,
-        choices=OCCASION_TYPE_CHOICES,
-        default='private'
-    )  # Private or Public
-
-    def __str__(self):
-        return f"{self.name} ({self.get_occasion_type_display()})"
-
 class TimeSlot(models.Model):
     community_centre = models.ForeignKey(
         'community_centre.CommunityCentre', on_delete=models.CASCADE, related_name='time_slots'

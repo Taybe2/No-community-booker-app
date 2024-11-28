@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from collections import defaultdict
+from .models import TimeSlot
 from django.utils import timezone
 from datetime import timedelta
-from .models import TimeSlot
 
 def time_slot_view(request):
     """Display time slots for the current week or other weeks, with all days accounted for."""
@@ -46,14 +47,20 @@ def time_slot_view(request):
 
         slots_by_day[current_day] = slots_with_bookings
         current_day += timedelta(days=1)
-
-    # Prepare the context
+    
+    # Handle form submission (time slot selection)
+    if request.method == 'POST':
+        selected_slot_id = request.POST.get('time_slot')
+        if selected_slot_id:
+            # You can use selected_slot_id to save the booking in the database or perform other actions
+            return redirect('booking-details', time_slot_id=selected_slot_id)  # Redirect to the booking step
+    
     context = {
-        'slots_by_day': slots_by_day,  # A dictionary of dates and their slots with booking info
-        'week_start': week_start,  # Start of the current/selected week
-        'week_end': week_end,  # End of the current/selected week
-        'week_offset': week_offset,  # Offset for next/previous week navigation
-        'today': today,  # Pass today's date to the template for comparison
+        'slots_by_day': slots_by_day,
+        'week_start': week_start,
+        'week_end': week_end,
+        'week_offset': week_offset,
+        'today': today,
     }
 
     return render(request, 'bookings/timeslot_list.html', context)

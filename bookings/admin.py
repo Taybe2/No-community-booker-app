@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Booking, TimeSlot, Occasion
+from .models import Booking, TimeSlot
 
 # Register your models here.
 

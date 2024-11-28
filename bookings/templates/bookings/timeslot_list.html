@@ -4,39 +4,34 @@
 
 {% block content %}
 <div class="container text-center mt-5">
-    <h2>Available Time Slots from {{ week_start|date:"l, F d, Y" }} to {{ week_end|date:"l, F d, Y" }}</h2>
-
-    <!-- Navigation Buttons -->
-    <div class="navigation">
-        <a href="?week_offset={{ week_offset|add:'-1' }}" class="btn btn-primary">Previous Week</a>
-        <a href="?week_offset={{ week_offset|add:'1' }}" class="btn btn-primary">Next Week</a>
-    </div>
+    <h3>Available Time Slots from {{ week_start|date:"F d, Y" }} to {{ week_end|date:"F d, Y" }}</h3>
+    <p>Choose an availbable Time Slot and click Book Now to make your booking</p>
 
     <!-- Select Slot Form -->
-    <form method="post" action="/book-slot/">
+    <form method="post" autocomplete="off">
         {% csrf_token %}
         {% for day, slots in slots_by_day.items %}
             <div class="day-section {% if day <= today %}text-muted{% endif %}">
-                <h3>
+                <h4>
                     {{ day|date:"l, F d, Y" }}
                     {% if day == today %}<strong>(Today)</strong>{% endif %}
-                </h3>
+                </h4>
             
                 {% if slots %}
                     <div class="btn-group-toggle" data-toggle="buttons">
                         {% for slot_info in slots %}
                             <input type="radio" class="btn-check" name="time_slot" id="{{ slot_info.slot.id }}" value="{{ slot_info.slot.id }}" 
-                                       {% if slot_info.has_booking %}disabled{% endif %}>
-                            <label class="btn btn-outline-primary {% if slot_info.has_booking %}disabled{% endif %}" for="{{ slot_info.slot.id }}">
+                                       {% if slot_info.has_booking or day <= today %}disabled{% endif %}>
+                            <label class="btn {% if slot_info.has_booking %} btn-primary disabled{% else %} btn-outline-primary{% endif %}" for="{{ slot_info.slot.id }}">
                                 {{ slot_info.slot.start_time }} - {{ slot_info.slot.end_time }}
                                 {% if slot_info.has_booking %}
                                     {% if slot_info.slot.booking.occasion_type == 'public' %}
-                                        <span style="color: blue;">(Public: {{ slot_info.slot.booking.occasion }})</span>
+                                        <span class="span-block">(Public: {{ slot_info.slot.booking.occasion }})</span>
                                     {% else %}
-                                        <span style="color: grey;">(Private Event)</span>
+                                        <span class="span-block">(Private Event)</span>
                                     {% endif %}
                                 {% else %}
-                                    <span style="color: green;">(Available)</span>
+                                    <span class="span-block">Available</span>
                                 {% endif %}
                             </label>
                         {% endfor %}
@@ -46,8 +41,14 @@
                 {% endif %}
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-success mt-3">Book Selected Time Slot</button>
+        <button type="submit" {% if not slots_by_day %} disabled {% endif %} class="btn btn-success mt-3">Book Selected Time Slot</button>
     </form>
+
+     <!-- Navigation Buttons -->
+     <div class="btn-group" role="group" aria-label="Basic outlined example">
+        <a type="button" href="?week_offset={{ week_offset|add:'-1' }}" class="btn btn-outline-primary">Previous Week</a>
+        <a type="button" href="?week_offset={{ week_offset|add:'1' }}" class="btn btn-outline-primary">Next Week</a>
+      </div>
     
     {% endblock %}
 </div>
