@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import TemplateView
 from django.contrib import messages
 from .models import CommunityCentre
 from .utils import generate_time_slots
@@ -25,13 +26,33 @@ def generate_time_slots_view(request, centre_id):
     
     return render(request, 'community_centre/generate_time_slots.html', {'centre': centre})
 
-def home_view(request):
-    """Homepage view displaying community center information."""
-    context = {
-        'community_name': 'Evergreen Community Centre',
-        'community_description': (
-            'Welcome to Evergreen Community Centre! We provide a space for community events, '
-            'meetings, and activities. Explore our services and book a time slot for your next event!'
-        ),
-    }
-    return render(request, 'community_centre/home.html', context)
+
+class HomePage(TemplateView):
+    template_name = 'community_centre/home.html'  # Specify the template to use
+
+    def get_context_data(self, **kwargs):
+        # Dictionary mapping numeric days to day names
+        DAYS_OF_WEEK = {
+            1: 'Monday',
+            2: 'Tuesday',
+            3: 'Wednesday',
+            4: 'Thursday',
+            5: 'Friday',
+            6: 'Saturday',
+            7: 'Sunday',
+        }
+        # Fetch the first (or only) community centre from the database
+        community_centre = CommunityCentre.objects.first()
+        context = super().get_context_data(**kwargs)
+        context['community_centre'] = community_centre
+
+        # Add operating start and end day names to the context
+        if community_centre:
+            context['openning_day_name'] = DAYS_OF_WEEK.get(
+                community_centre.operating_start_day, "Invalid Day"
+            )
+            context['closing_day_name'] = DAYS_OF_WEEK.get(
+                community_centre.operating_end_day, "Invalid Day"
+            )
+
+        return context

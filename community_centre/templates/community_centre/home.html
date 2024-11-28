@@ -2,14 +2,42 @@
 
 {% url 'time_slots' as time_slots_url %}
 
-{% block title %}Welcome to Evergreen Community Centre{% endblock %}
+{% block title %}Welcome to {{ community_centre.name }}{% endblock %}
 
 {% block content %}
 <div class="container text-center mt-5">
-    <h1>{{ community_name }}</h1>
-    <p class="lead">{{ community_description }}</p>
+    <h1>Community Booker</h1>
+    <p class="lead">Welcome to Community Booker App! 
+        Plan your community events, meetings, and activities with ease. 
+        Check our availability and book the perfect time slot for your next event!
+    </p>
 
     <!-- Button to Available Time Slots -->
     <a href="{% url 'time_slots' %}" class="btn btn-primary mt-4">See Available Times</a>
 </div>
+
+<!-- Center Details Section -->
+<section>
+    <div class="container">
+        <h2 class="text-center">Community Center Details</h2>
+        <div class="row align-items-center">
+            <div class="col">
+            One of three columns
+            </div>
+            <div class="col">
+                <h4>{{ community_centre.name }}</h4>
+                <p>{{ community_centre.details }}</p>
+                <p><strong>Location:</strong> {{ community_centre.address }}</p>
+                <p>
+                    <span><strong>Operating Times:</strong></span>
+                    <span>
+                        <span class="span-display-block">{{ openning_day_name }} to {{ closing_day_name }},</span>
+                        <span class="span-display-block">{{community_centre.opening_time}} - {{community_centre.closing_time}}</span>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /Center Detail Section -->
 {% endblock %}
