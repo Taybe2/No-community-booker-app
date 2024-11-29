@@ -6,7 +6,9 @@
 <div class="container mt-5">
     <div class="row justify-content-end align-items-center text-center timeslot-header">
         <div class="col-md-8">
-            <h3>Available Time Slots from {{ week_start|date:"M d, Y" }} to {{ week_end|date:"M d, Y" }}</h3>
+            <h3>Available Time Slots<br>
+                {{ week_start|date:"F d, Y" }} to {{ week_end|date:"F d, Y" }}
+            </h3>
             <p>Choose an availbable Time Slot and click Book Now to make your booking</p>
         </div>
         <div class="col-md-4 d-flex justify-content-center justify-content-md-end mb-4 mb-md-0">
@@ -22,20 +24,20 @@
         {% csrf_token %}
         {% for day, slots in slots_by_day.items %}
             <div class="day-section d-flex justify-content-between align-items-center {% if day <= today %}text-muted{% endif %}">
-                <h4>
-                    {{ day|date:"D, d M"|upper }}
-                    {% if day == today %}(Today){% endif %}
+                <h4 class="flex-shrink-1">
+                    {{ day|date:"D"|upper }}<br>{{day|date:"d"|upper}}<br>{{day|date:"M"|upper }}
                 </h4>
             
                 {% if slots %}
-                    <div class="btn-group-toggle" data-toggle="buttons">
+                    <div class="btn-group-toggle w-100" data-toggle="buttons">
+                        {% if day == today %}<span class="d-flex flex-nowrap">TODAY</span>{% endif %}
                         {% for slot_info in slots %}
                             <input type="radio" class="btn-check" name="time_slot" id="{{ slot_info.slot.id }}" value="{{ slot_info.slot.id }}" 
                                        {% if slot_info.has_booking or day <= today %}disabled{% endif %}>
                             <label class="btn {% if slot_info.has_booking %} btn-primary disabled{% else %} btn-outline-primary{% endif %}" for="{{ slot_info.slot.id }}">
                                 {{ slot_info.slot.start_time|date:"g A" }} - {{ slot_info.slot.end_time|date:"g A" }}
                                 {% if slot_info.has_booking %}
-                                    <span> Booked</span>
+                                    <span> Booked for</span>
                                     {% if slot_info.slot.booking.occasion_type == 'public' %}
                                         <span class="span-block">{{ slot_info.slot.booking.occasion }}</span>
                                     {% else %}
@@ -48,7 +50,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p>No time slots available for this day.</p>
+                    <p class="w-100">No time slots available for this day.</p>
                 {% endif %}
             </div>
         {% endfor %}

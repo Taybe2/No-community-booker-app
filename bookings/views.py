@@ -53,7 +53,7 @@ def time_slot_view(request):
         selected_slot_id = request.POST.get('time_slot')
         if selected_slot_id:
             # You can use selected_slot_id to save the booking in the database or perform other actions
-            return redirect('booking-details', time_slot_id=selected_slot_id)  # Redirect to the booking step
+            return redirect('booking-details', time_slot_id=selected_slot_id)
     
     context = {
         'slots_by_day': slots_by_day,

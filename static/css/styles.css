@@ -23,6 +23,6 @@
 
 @media screen and (min-width: 577px) {
     .text-center.timeslot-header {
-        text-align: left;
+        text-align: left !important;
     }
 }
