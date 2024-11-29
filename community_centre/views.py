@@ -27,12 +27,9 @@ def generate_time_slots_view(request, centre_id):
     return render(request, 'community_centre/generate_time_slots.html', {'centre': centre})
 
 
-class HomePage(TemplateView):
-    template_name = 'community_centre/home.html'  # Specify the template to use
+def home_page(request):
 
-    def get_context_data(self, **kwargs):
-        # Dictionary mapping numeric days to day names
-        DAYS_OF_WEEK = {
+    DAYS_OF_WEEK = {
             1: 'Monday',
             2: 'Tuesday',
             3: 'Wednesday',
@@ -41,18 +38,19 @@ class HomePage(TemplateView):
             6: 'Saturday',
             7: 'Sunday',
         }
-        # Fetch the first (or only) community centre from the database
-        community_centre = CommunityCentre.objects.first()
-        context = super().get_context_data(**kwargs)
-        context['community_centre'] = community_centre
+    community_centre = CommunityCentre.objects.first()
 
-        # Add operating start and end day names to the context
-        if community_centre:
-            context['openning_day_name'] = DAYS_OF_WEEK.get(
-                community_centre.operating_start_day, "Invalid Day"
-            )
-            context['closing_day_name'] = DAYS_OF_WEEK.get(
-                community_centre.operating_end_day, "Invalid Day"
-            )
+    context = {
+        "community_centre": community_centre,
+        "community_centre_slug": community_centre.slug,
+        'openning_day_name': DAYS_OF_WEEK.get(
+                community_centre.operating_start_day, "Invalid Day"),
+        'closing_day_name': DAYS_OF_WEEK.get(
+                community_centre.operating_end_day, "Invalid Day"),
+    }
 
-        return context
+    return render(
+        request,
+        "community_centre/home.html",
+        context,
+    )

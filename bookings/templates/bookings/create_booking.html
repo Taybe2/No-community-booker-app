@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Confirmation - Community Booker{% endblock %}
+
+{% block content %}
+<h1>Confirm your booking</h1>
+<p>Time Slot: {{ time_slot.date }} from {{ time_slot.start_time }} to {{ time_slot.end_time }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirm Booking</button>
+</form>
+{% endblock %}

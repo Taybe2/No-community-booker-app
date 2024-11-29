@@ -13,7 +13,9 @@
     </p>
 
     <!-- Button to Available Time Slots -->
-    <a href="{% url 'time_slots' %}" class="btn btn-primary mt-4">See Available Times</a>
+    <p>Slug: {{ community_centre.slug }}</p>
+     <a href="{% url 'time_slots' community_centre_slug=community_centre_slug %}" class="btn btn-primary mt-4">See Available Times</a>
+    
 </div>
 
 <!-- Center Details Section -->

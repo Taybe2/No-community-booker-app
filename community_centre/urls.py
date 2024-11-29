@@ -7,5 +7,5 @@ urlpatterns = [
         views.generate_time_slots_view,
         name='generate_time_slots',
     ),
-    path('', views.HomePage.as_view(), name='home'),
+    path('', views.home_page, name='home'),
 ]
