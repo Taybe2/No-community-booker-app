@@ -8,9 +8,21 @@
 .day-section {
     margin-bottom: 2rem;
     text-align: left;
+    border-top: 1px solid #bababa;
+    padding-top: 1.5em;
+}
+
+.day-section h4 {
+    margin: 0 1em
 }
 
 .btn-group-toggle .btn {
     margin: 0.5rem 0.2rem;
     text-align: center;
+}
+
+@media screen and (min-width: 577px) {
+    .text-center.timeslot-header {
+        text-align: left;
+    }
 }

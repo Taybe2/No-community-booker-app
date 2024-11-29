@@ -3,18 +3,28 @@
 {% block title %}Available Time Slots{% endblock %}
 
 {% block content %}
-<div class="container text-center mt-5">
-    <h3>Available Time Slots from {{ week_start|date:"F d, Y" }} to {{ week_end|date:"F d, Y" }}</h3>
-    <p>Choose an availbable Time Slot and click Book Now to make your booking</p>
-
+<div class="container mt-5">
+    <div class="row justify-content-end align-items-center text-center timeslot-header">
+        <div class="col-md-8">
+            <h3>Available Time Slots from {{ week_start|date:"M d, Y" }} to {{ week_end|date:"M d, Y" }}</h3>
+            <p>Choose an availbable Time Slot and click Book Now to make your booking</p>
+        </div>
+        <div class="col-md-4 d-flex justify-content-center justify-content-md-end mb-4 mb-md-0">
+            <!-- Navigation Buttons -->
+            <div class="btn-group" role="group" aria-label="Week navigation controls">
+                <a type="button" aria-label="View time slots for the previous week" href="?week_offset={{ week_offset|add:'-1' }}" class="btn btn-outline-primary">Previous Week</a>
+                <a type="button" aria-label="View time slots for the next week" href="?week_offset={{ week_offset|add:'1' }}" class="btn btn-outline-primary">Next Week</a>
+            </div>
+        </div>
+    </div>
     <!-- Select Slot Form -->
     <form method="post" autocomplete="off">
         {% csrf_token %}
         {% for day, slots in slots_by_day.items %}
-            <div class="day-section {% if day <= today %}text-muted{% endif %}">
+            <div class="day-section d-flex justify-content-between align-items-center {% if day <= today %}text-muted{% endif %}">
                 <h4>
-                    {{ day|date:"l, F d, Y" }}
-                    {% if day == today %}<strong>(Today)</strong>{% endif %}
+                    {{ day|date:"D, d M"|upper }}
+                    {% if day == today %}(Today){% endif %}
                 </h4>
             
                 {% if slots %}
@@ -23,12 +33,13 @@
                             <input type="radio" class="btn-check" name="time_slot" id="{{ slot_info.slot.id }}" value="{{ slot_info.slot.id }}" 
                                        {% if slot_info.has_booking or day <= today %}disabled{% endif %}>
                             <label class="btn {% if slot_info.has_booking %} btn-primary disabled{% else %} btn-outline-primary{% endif %}" for="{{ slot_info.slot.id }}">
-                                {{ slot_info.slot.start_time }} - {{ slot_info.slot.end_time }}
+                                {{ slot_info.slot.start_time|date:"g A" }} - {{ slot_info.slot.end_time|date:"g A" }}
                                 {% if slot_info.has_booking %}
+                                    <span> Booked</span>
                                     {% if slot_info.slot.booking.occasion_type == 'public' %}
-                                        <span class="span-block">(Public: {{ slot_info.slot.booking.occasion }})</span>
+                                        <span class="span-block">{{ slot_info.slot.booking.occasion }}</span>
                                     {% else %}
-                                        <span class="span-block">(Private Event)</span>
+                                        <span class="span-block">Private Event</span>
                                     {% endif %}
                                 {% else %}
                                     <span class="span-block">Available</span>
@@ -41,14 +52,12 @@
                 {% endif %}
             </div>
         {% endfor %}
-        <button type="submit" {% if not slots_by_day %} disabled {% endif %} class="btn btn-success mt-3">Book Selected Time Slot</button>
+        <div class="row justify-content-end">
+            <div class="col-md-4">
+                <button type="submit" {% if not slots_by_day %} disabled {% endif %} class="btn btn-primary mt-3">Book Selected Time Slot</button>
+            </div>
+        </div>
     </form>
-
-     <!-- Navigation Buttons -->
-     <div class="btn-group" role="group" aria-label="Basic outlined example">
-        <a type="button" href="?week_offset={{ week_offset|add:'-1' }}" class="btn btn-outline-primary">Previous Week</a>
-        <a type="button" href="?week_offset={{ week_offset|add:'1' }}" class="btn btn-outline-primary">Next Week</a>
-      </div>
     
     {% endblock %}
 </div>
