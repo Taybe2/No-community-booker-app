@@ -2,15 +2,16 @@ from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.utils.text import slugify
 from community_centre.models import CommunityCentre
 from .models import TimeSlot, Booking
 from .forms import BookingForm
 
-def time_slot_view(request, community_centre_slug):
+community_centre = CommunityCentre.objects.first()
+
+def time_slot_view(request):
     """Display time slots for the current week or other weeks, with all days accounted for."""
-    print(community_centre_slug)
-    community_centre = get_object_or_404(CommunityCentre, slug=community_centre_slug)
-    print(community_centre)
+
     today = timezone.now().date()  # Get today's date
 
     # Get the week offset from the URL parameters (default is 0)
@@ -54,25 +55,22 @@ def time_slot_view(request, community_centre_slug):
         selected_slot_id = request.POST.get('time_slot')
         if selected_slot_id:
             # Save the booking in the database or perform other actions
-            return redirect('booking-details', community_centre_slug=community_centre.slug, time_slot_id=selected_slot_id)
+            return redirect('booking-details', time_slot_id=selected_slot_id)
     
     context = {
-        'community_centre_slug': community_centre.slug,
         'slots_by_day': slots_by_day,
         'week_start': week_start,
         'week_end': week_end,
         'week_offset': week_offset,
         'today': today,
     }
-    print(community_centre.slug)
-    print(context)
+
     return render(request, 'bookings/timeslot_list.html', context)
 
 @login_required
-def create_booking_view(request, community_centre_slug, time_slot_id):
+def create_booking_view(request, time_slot_id):
     """Handle booking creation for a selected time slot."""
     time_slot = get_object_or_404(TimeSlot, id=time_slot_id)
-    community_centre = get_object_or_404(CommunityCentre, slug=community_centre_slug)
 
     # Check if the time slot is already booked
     if Booking.objects.filter(time_slot=time_slot).exists():
@@ -88,7 +86,7 @@ def create_booking_view(request, community_centre_slug, time_slot_id):
             booking.time_slot = time_slot
             booking.community_centre = community_centre
             booking.save()
-            return redirect('my-bookings')  # Redirect to a confirmation page
+            return redirect('my-bookings')  # Redirect to My Bookings page
 
     else:
         form = BookingForm(initial={'time_slot': time_slot})
@@ -96,5 +94,54 @@ def create_booking_view(request, community_centre_slug, time_slot_id):
     return render(request, 'bookings/create_booking.html', {
         'form': form,
         'time_slot': time_slot,
-        'community_centre_slug': community_centre.slug
+    })
+
+@login_required
+def my_bookings_view(request):
+    """Display the user's bookings and allow editing or cancellation."""
+    # Get the current user
+    user = request.user
+
+    # Fetch the bookings made by the logged-in user
+    bookings = Booking.objects.filter(user=user).order_by('-created_at')  # You can order by booking creation date
+
+    context = {
+        'bookings': bookings,
+    }
+
+    return render(request, 'bookings/my_bookings.html', context)
+
+@login_required
+def cancel_booking(request, slug):
+    """Cancel an existing booking."""
+    # Get the booking object by ID
+    booking = get_object_or_404(Booking, slug=slug, user=request.user)
+
+    # Ensure that the booking is not in the past (optional)
+    if booking.time_slot.date < timezone.now().date():
+        return render(request, 'bookings/booking_error.html', {
+            'message': 'You cannot cancel bookings in the past.'
+        })
+
+    # Cancel the booking (delete it)
+    booking.delete()
+
+    return redirect('my-bookings')  # Redirect to the user's bookings page
+
+@login_required
+def edit_booking(request, slug):
+    """Edit an existing booking."""
+    booking = get_object_or_404(Booking, slug=slug, user=request.user)
+
+    if request.method == 'POST':
+        form = BookingForm(request.POST, instance=booking)
+        if form.is_valid():
+            form.save()  # Save the updated booking
+            return redirect('my-bookings')
+    else:
+        form = BookingForm(instance=booking)
+
+    return render(request, 'bookings/edit_booking.html', {
+        'form': form,
+        'booking': booking
     })
