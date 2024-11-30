@@ -1,6 +1,7 @@
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.utils import timezone
 from django.utils.text import slugify
 from community_centre.models import CommunityCentre
@@ -9,7 +10,7 @@ from .forms import BookingForm
 
 community_centre = CommunityCentre.objects.first()
 
-def time_slot_view(request):
+def time_slot_view(request, booking_slug=None):
     """Display time slots for the current week or other weeks, with all days accounted for."""
 
     today = timezone.now().date()  # Get today's date
@@ -53,16 +54,30 @@ def time_slot_view(request):
     # Handle form submission (time slot selection)
     if request.method == 'POST':
         selected_slot_id = request.POST.get('time_slot')
+        time_slot = get_object_or_404(TimeSlot, id=selected_slot_id)
+
+        if booking_slug:
+            # Edit existing booking
+            booking = get_object_or_404(Booking, slug=booking_slug)
+            booking.time_slot = time_slot
+            booking.save()
+            messages.success(request, "Time slot successfully updated.")
+            return redirect('edit-booking', slug=booking.slug)
         if selected_slot_id:
             # Save the booking in the database or perform other actions
             return redirect('booking-details', time_slot_id=selected_slot_id)
     
+    if booking_slug:
+        # Edit existing booking
+        booking = get_object_or_404(Booking, slug=booking_slug)
+
     context = {
         'slots_by_day': slots_by_day,
         'week_start': week_start,
         'week_end': week_end,
         'week_offset': week_offset,
         'today': today,
+        'editing_booking': booking_slug is not None,
     }
 
     return render(request, 'bookings/timeslot_list.html', context)
@@ -81,6 +96,7 @@ def create_booking_view(request, time_slot_id):
             booking.community_centre = community_centre
             print(booking)
             booking.save()
+            messages.success(request, "Booking successfully created.")
             return redirect('my-bookings')  # Redirect to My Bookings page
 
     else:
@@ -126,12 +142,13 @@ def cancel_booking(request, slug):
 @login_required
 def edit_booking_view(request, slug):
     """Edit an existing booking."""
-    booking = get_object_or_404(Booking, slug=slug, user=request.user)
+    booking = get_object_or_404(Booking, slug=slug)
 
     if request.method == 'POST':
         form = BookingForm(request.POST, instance=booking)
         if form.is_valid():
             form.save()  # Save the updated booking
+            messages.success(request, "Booking successfully updated.")
             return redirect('my-bookings')
     else:
         form = BookingForm(instance=booking)
@@ -140,3 +157,8 @@ def edit_booking_view(request, slug):
         'form': form,
         'booking': booking
     })
+
+@login_required
+def change_time_slot_view(request, booking_slug):
+    """Redirect to the time slots view with the booking slug."""
+    return redirect('time_slots', booking_slug=booking_slug)

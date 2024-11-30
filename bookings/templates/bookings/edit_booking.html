@@ -4,27 +4,16 @@
 
 {% block content %}
   <h1>Edit Booking</h1>
+  <p>Time Slot: {{ booking.time_slot.date }} from {{ booking.time_slot.start_time }} to {{ booking.time_slot.end_time }}</p>
+  <p>
+    <a href="{% url 'change-time-slot' booking.slug %}">Change Time Slot</a>
+  </p>
 
-  <p><strong>Booking ID:</strong> {{ booking.id }}</p>
-  <p><strong>Time Slot:</strong> {{ booking.time_slot.date }} at {{ booking.time_slot.start_time }}</p>
-  <p><strong>Community Centre:</strong> {{ booking.community_centre.name }}</p>
-
-  <form method="post">
+  <form method="POST">
     {% csrf_token %}
-    <div>
-      <label for="id_time_slot">Time Slot</label>
-      {{ form.time_slot }}
-    </div>
-
-    <div>
-      <label for="id_occasion">Occasion</label>
-      {{ form.occasion }}
-    </div>
-
-    <div>
-      <button type="submit">Save Changes</button>
-    </div>
-  </form>
+    {{ form.as_p }}
+    <button type="submit">Edit</button>
+</form>
 
   <p><a href="{% url 'my-bookings' %}">Back to My Bookings</a></p>
 {% endblock %}

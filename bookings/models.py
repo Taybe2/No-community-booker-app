@@ -33,7 +33,7 @@ class Booking(models.Model):
         'community_centre.CommunityCentre', on_delete=models.CASCADE, related_name='bookings'
     )
     occasion = models.CharField(max_length=100, default='')
-    slug = models.SlugField(unique=True, blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True, null=True, max_length=100)
     occasion_type = models.CharField(
         max_length=10,
         choices=OCCASION_TYPE_CHOICES,
