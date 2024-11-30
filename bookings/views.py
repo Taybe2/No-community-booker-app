@@ -67,9 +67,10 @@ def time_slot_view(request, booking_slug=None):
             # Save the booking in the database or perform other actions
             return redirect('booking-details', time_slot_id=selected_slot_id)
     
+    booking = None
     if booking_slug:
-        # Edit existing booking
         booking = get_object_or_404(Booking, slug=booking_slug)
+    print(booking)
 
     context = {
         'slots_by_day': slots_by_day,
@@ -77,7 +78,7 @@ def time_slot_view(request, booking_slug=None):
         'week_end': week_end,
         'week_offset': week_offset,
         'today': today,
-        'editing_booking': booking_slug is not None,
+        'booking': booking,
     }
 
     return render(request, 'bookings/timeslot_list.html', context)
