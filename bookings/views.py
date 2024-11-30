@@ -72,12 +72,6 @@ def create_booking_view(request, time_slot_id):
     """Handle booking creation for a selected time slot."""
     time_slot = get_object_or_404(TimeSlot, id=time_slot_id)
 
-    # Check if the time slot is already booked
-    if Booking.objects.filter(time_slot=time_slot).exists():
-        return render(request, 'bookings/booking_error.html', {
-            'message': 'This time slot is already booked.'
-        })
-
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
@@ -85,6 +79,7 @@ def create_booking_view(request, time_slot_id):
             booking.user = request.user  # Associate the booking with the logged-in user
             booking.time_slot = time_slot
             booking.community_centre = community_centre
+            print(booking)
             booking.save()
             return redirect('my-bookings')  # Redirect to My Bookings page
 
@@ -129,7 +124,7 @@ def cancel_booking(request, slug):
     return redirect('my-bookings')  # Redirect to the user's bookings page
 
 @login_required
-def edit_booking(request, slug):
+def edit_booking_view(request, slug):
     """Edit an existing booking."""
     booking = get_object_or_404(Booking, slug=slug, user=request.user)
 

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Booking - Community Booker{% endblock %}
+
+{% block content %}
+  <h1>Edit Booking</h1>
+
+  <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+  <p><strong>Time Slot:</strong> {{ booking.time_slot.date }} at {{ booking.time_slot.start_time }}</p>
+  <p><strong>Community Centre:</strong> {{ booking.community_centre.name }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <div>
+      <label for="id_time_slot">Time Slot</label>
+      {{ form.time_slot }}
+    </div>
+
+    <div>
+      <label for="id_occasion">Occasion</label>
+      {{ form.occasion }}
+    </div>
+
+    <div>
+      <button type="submit">Save Changes</button>
+    </div>
+  </form>
+
+  <p><a href="{% url 'my-bookings' %}">Back to My Bookings</a></p>
+{% endblock %}

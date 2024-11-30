@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 from community_centre.models import CommunityCentre
 
@@ -40,6 +41,12 @@ class Booking(models.Model):
     )  # Choice field for type (Private/Public)
     notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # Example: "user123-2024-12-01-14-00"
+        unique_identifier = f"{self.user.username}-{self.occasion}-{self.time_slot.date}-{self.time_slot.start_time}"
+        self.slug = slugify(unique_identifier)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Booking by {self.user.username} for {self.time_slot} at {self.community_centre.name}"
