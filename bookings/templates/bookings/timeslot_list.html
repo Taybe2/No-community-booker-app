@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if booking != None %}
-        Select an Available Time Slot
+        Choose a Different Time Slot - Community Booker
     {% else %}
-        Available Time Slots
+        Available Time Slots - Community Booker
     {% endif %}
 {% endblock %}
 
@@ -14,16 +14,13 @@
     <div class="row justify-content-end align-items-center text-center timeslot-header">
         <div class="col-md-8">
             {% if booking != None %}
-                <h3>Editing {{ booking.occasion }} booking</h3>
-                <p>Select a new available time slot for your booking.</p>
-                <!-- Cancel button to go back to the booking edit view -->
-                <a href="{% if booking %}{% url 'edit-booking' slug=booking.slug %}{% else %}{% url 'my-bookings' %}{% endif %}" class="btn btn-secondary">Cancel</a>
-                
+                <h3>Reshedule Your Booking: {{ booking.occasion }}</h3>
+                <p><strong>Current Time Slot: </strong><i>{{ booking.time_slot.date }} from {{ booking.time_slot.start_time }} to {{ booking.time_slot.end_time }}</i></p>
+                <p>Select a new time slot for your booking and click "Update Booking" button to change date and/or time of your booking.</p>                
             {% else %}
-                <h3>Available Time Slots<br>
-                    {{ week_start|date:"F d, Y" }} to {{ week_end|date:"F d, Y" }}
-                </h3>
-                <p>Choose an availbable Time Slot and click Book Now to make your booking</p>
+                <h3>Time Slots for Booking</h3>
+                <p><i>{{ week_start|date:"F d, Y" }} to {{ week_end|date:"F d, Y" }}</i></p>
+                <p>Choose an available time slot and click "Book Selected Time Slot" to make your booking.</p>
             {% endif %}
         </div>
         <div class="col-md-4 d-flex justify-content-center justify-content-md-end mb-4 mb-md-0">
@@ -65,14 +62,21 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="w-100">No time slots available for this day.</p>
+                    <p class="w-100">
+                        {% if day == today %}TODAY<br>{% endif %}
+                        No time slots available for this day.
+                    </p>
                 {% endif %}
             </div>
         {% endfor %}
-        <div class="row justify-content-end">
-            <div class="col-md-4">
-                <button type="submit" {% if not slots_by_day %} disabled {% endif %} class="btn btn-primary mt-3">Book Selected Time Slot</button>
-            </div>
+        <div class="d-flex justify-content-between">
+            {% if booking != None %}
+                <!-- Go back to the booking edit view button-->
+                <a href="{% if booking %}{% url 'edit-booking' slug=booking.slug %}{% else %}{% url 'my-bookings' %}{% endif %}" class="btn btn-secondary">Back to Edit</a>
+                <button type="submit" class="btn btn-primary">Update Booking</button>
+            {%else%}
+                    <button type="submit" class="btn btn-primary">Book Selected Time Slot</button>
+            {% endif %}
         </div>
     </form>
     
