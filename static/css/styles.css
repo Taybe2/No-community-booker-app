@@ -1,9 +1,25 @@
+
+
 .span-inline-block {
     display: inline-block;
 }
 .span-block {
     display: block;
 }
+
+/* Home Page */
+.container-welcome {
+    height: 35em;
+    background-image: linear-gradient(45deg, rgba(245, 70, 66, 0.48), rgba(8, 83, 156, 0.5)), url(../images/woman.jpg);
+    background-size: cover;
+    background-position: center right;
+    color: #fff;
+}
+.container-welcome div {
+    max-width: 20rem;
+    margin: 0 auto;
+}
+
 /* Time Slots */
 .day-section {
     margin-bottom: 2rem;
@@ -22,7 +38,42 @@
 }
 
 @media screen and (min-width: 577px) {
+    .container-welcome div {
+        margin: 0 auto;
+    }
     .text-center.timeslot-header {
         text-align: left !important;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .container-welcome div {
+        margin-left: 3.5rem;
+    }
+}
+
+@media screen and (min-width: 961px) {
+    .container-welcome div {
+        margin-left: 8.5rem;
+    }
+}
+
+@media screen and (min-width: 1141px) {
+    .container-welcome {
+        background-position: 0% 20%;
+    }
+    .container-welcome div {
+        margin-left: 11.5rem;
+        max-width: 25rem;
+    }
+}
+
+@media screen and (min-width: 1321px) {
+    .container-welcome {
+        background-position: 0% 20%;
+    }
+    .container-welcome div {
+        margin-left: 14.5rem;
+        max-width: 30rem;
     }
 }

@@ -5,17 +5,16 @@
 {% block title %}Welcome to {{ community_centre.name }}{% endblock %}
 
 {% block content %}
-<div class="container text-center mt-5">
-    <h1>Community Booker</h1>
-    <p class="lead">Welcome to Community Booker App! 
-        Plan your community events, meetings, and activities with ease. 
-        Check our availability and book the perfect time slot for your next event!
-    </p>
-
-    <!-- Button to Available Time Slots -->
-    <p>Slug: {{ community_centre.slug }}</p>
-     <a href="{% url 'time_slots' %}" class="btn btn-primary mt-4">See Available Times</a>
-    
+<div class="container-fluid container-welcome text-center d-flex align-items-center">
+    <div>
+        <h1>Community Booker</h1>
+        <p class="lead">Welcome to Community Booker App! 
+            Plan your community events, meetings, and activities with ease. 
+            Check our availability and book the perfect time slot for your next event!
+        </p>
+        <!-- Button to Available Time Slots -->
+        <a href="{% url 'time_slots' %}" class="btn btn-primary mt-4">See Available Times</a>
+    </div>    
 </div>
 
 <!-- Center Details Section -->
